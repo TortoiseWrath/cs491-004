@@ -9,3 +9,5 @@ a.out
 *_latexmk
 *.aux
 _minted-*
+proj1
+!proj1/
