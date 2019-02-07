@@ -2,31 +2,29 @@ dgemm0:
     Loop (i): 1000 iterations
         Loop (j): 1000 iterations
             Loop (k): 1000 iterations
-                1 cycle to calculate i*n+k, k*n+j, i*n+j
                 100 cycles to access a[i*n+k]
                 100 cycles to access b[k*n+j]
                 100 cycles to access c[i*n+j]
                 1 cycle to calculate c[i*n+j] + a[i*n+k] * b[k*n+j]
-                Total: 302 cycles per iteration
-            Total: 302,000 cycles per iteration
-        Total: 302,000,000 cycles per iteration
-    Total: 302,000,000,000 cycles / 2 GHz = 151.0 seconds
+                100 cycles to assign c[i*n+j]
+                Total: 401 cycles per iteration
+            Total: 401,000 cycles per iteration
+        Total: 401,000,000 cycles per iteration
+    Total: 401,000,000,000 cycles / 2 GHz = 200.5 seconds
 
 dgemm1:
     Loop (i): 1000 iterations
         Loop (j): 1000 iterations
-            1 cycle to calculate i*n+j
             100 cycles to access c[i*n+j]
             Loop (k): 1000 iterations
-                1 cycle to calculate i*n+k, k*n+j
                 100 cycles to access a[i*n+k]
                 100 cycles to access b[k*n+j]
                 1 cycle to calculate r + a[i*n+k] * b[k*n+j]
-                Total: 202 cycles per iteration
+                Total: 201 cycles per iteration
             100 cycles to assign c[i*n+j]
-            Total: 202,201 cycles per iteration
-        Total: 202,201,000 cycles per iteration
-    Total: 202,201,000,000 cycles / 2 GHz = 101.1 seconds
+            Total: 201,200 cycles per iteration
+        Total: 201,200,000 cycles per iteration
+    Total: 201,200,000,000 cycles / 2 GHz = 100.6 seconds
 
 Total floating point operations is 3*n^3
 
