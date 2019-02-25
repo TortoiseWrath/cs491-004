@@ -1,0 +1,66 @@
+\documentclass[12pt,letterpaper,oneside]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{minted}
+
+\begin{document}
+
+\title{CS 491-004 Project 2 Report}
+\author{Sean Gillen}
+\date{February 24, 2019}
+\maketitle
+
+\section*{Introduction}
+In this project, I calculated, tested, and compared performance of the six simple triple-loop and the six blocked-version matrix multiplication algorithms on the Pantarhei cluster at the University of Alabama.
+
+\section*{Part 1}
+In both $ijk$ and $jik$ multiplication, the inner loop accesses \texttt{a[i*n+k]} and \texttt{b[k*n+j]}.
+For large values of $n$, since a line of the cache holds 10 doubles and elements of \texttt{a} are read in consecutive order, there will be a read cache miss from matrix $A$ every 10 iterations (0.1 per iteration),
+and each read from matrix $B$ results in a compulsory miss. Matrix $C$ is never read in this algorithm, so there are a total of $0.1n^3$ misses reading matrix $A$, $n^3$ misses reading matrix $B$, and 0 misses reading matrix $C$.
+
+In $kij$ and $ikj$ multiplication, the inner loop accesses \texttt{c[i*n+j]} and \texttt{b[k*n+j]} and the middle loop accesses \texttt{a[i*n+k]}.
+The reads from matrices $B$ and $C$ will both miss once every 10 iterations of the inner loop. For large $n$, all lines of the cache are used by the inner loop so the read from matrix $A$ will miss at every iteration.
+This means that in most cases there are $n^2$ misses reading matrix $A$, $0.1n^3$ misses reading matrix $B$, and $0.1n^3$ misses reading matrix $C$.
+
+Finally, in $jki$ and $kji$ multiplication, the inner loop accesses \texttt{c[i*n+j]} and \texttt{a[i*n+k]} and the middle loop accesses \texttt{b[k*n+j]}.
+The reads from matrices $A$ and $C$ in the inner loop are both columnwise, so miss at every iteration for large $n$.
+The read from matrix $B$ also misses at every iteration of the middle loop when $n$ is sufficiently large for the inner loop to exhaust the cache.
+As such, for large $n$, both $jki$ and $kji$ multiplication will result in $n^3$ misses reading matrix $A$, $n^2$ misses reading matrix $B$, and $n^3$ misses reading matrix $C$.
+
+For small $n$, regardless of which algorithm is used, each value will be read only once since the cache is never filled and values read at previous iterations of each loop are never replaced.
+For $ikj$, $jki$, $kij$, and $kji$ multiplication, the total size of matrices $A$, $B$, and $C$ must not exceed the size of the cache ($3n^2\le60\times10\Rightarrow n<14$) for this property to have effect.
+For $ijk$ and $jik$ multiplication, since values from matrix $C$ are not stored in the cache, the total size of matrices $A$ and $B$ must not exceed the size of the cache ($2n^2\le60\times10\Rightarrow n<17$).
+
+\begin{center}
+	\subsection*{$n=10000$}
+	\begin{tabular}{c | c c c c | c c}
+		& \multicolumn{4}{c|}{Misses} & Total & Miss \\
+		& $A$ & $B$ & $C$ & Total & Reads & Rate \\
+		\hline
+		$ijk$ & $10^{11}$ & $10^{12}$ & 0 & $1.1\times10^{12}$ & $2\times10^{12}$ & 55\% \\
+		$ikj$ & $10^8$ & $10^{11}$ & $10^{11}$ & $2.001\times10^{11}$ & $2.0001\times10^{12}$ & 10\% \\
+		$jik$ & $10^{11}$ & $10^{12}$ & 0 & $1.1\times10^{12}$ & $2\times10^{12}$ & 55\% \\
+		$jki$ & $10^8$ & $10^{12}$ & $10^{12}$ & $2.0001\times10^{12}$ & $2.0001\times10^{12}$ & 100\% \\
+		$kij$ & $10^8$ & $10^{11}$ & $10^{11}$ & $2.001\times10^{11}$ & $2.0001\times10^{12}$ & 10\% \\
+		$kji$ & $10^8$ & $10^{12}$ & $10^{12}$ & $2.0001\times10^{12}$ & $2.0001\times10^{12}$ & 100\% 
+	\end{tabular}
+	\subsection*{$n=10$}
+	\begin{tabular}{c | c c c c | c c}
+		& \multicolumn{4}{c|}{Misses} & Total & Miss \\
+		& $A$ & $B$ & $C$ & Total & Reads & Rate \\
+		\hline
+		$ijk$ & 10 & 10 & 0 & 20 & 2000 & 1.0\% \\
+		$ikj$ & 10 & 10 & 10 & 30 & 2100 & 1.4\% \\
+		$jik$ & 10 & 10 & 0 & 20 & 2000 & 1.0\% \\
+		$jki$ & 10 & 10 & 10 & 30 & 2100 & 1.4\% \\
+		$kij$ & 10 & 10 & 10 & 30 & 2100 & 1.4\% \\
+		$kji$ & 10 & 10 & 10 & 30 & 2100 & 1.4\% \\
+	\end{tabular}
+\end{center}
+
+\section*{Part 2}
+
+
+\section*{Conclusion}
+conclude
+ 
+\end{document} 
