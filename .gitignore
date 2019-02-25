@@ -12,3 +12,5 @@ _minted-*
 proj1
 !proj1/
 *.pdf
+proj2
+!proj2/

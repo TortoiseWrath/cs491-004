@@ -6,7 +6,7 @@
 
 \title{CS 491-004 Project 2 Report}
 \author{Sean Gillen}
-\date{February 24, 2019}
+\date{February 25, 2019}
 \maketitle
 
 \section*{Introduction}
@@ -33,8 +33,8 @@ For $ijk$ and $jik$ multiplication, since values from matrix $C$ are not stored 
 \begin{center}
 	\subsection*{$n=10000$}
 	\begin{tabular}{c | c c c c | c c}
-		& \multicolumn{4}{c|}{Misses} & Total & Miss \\
-		& $A$ & $B$ & $C$ & Total & Reads & Rate \\
+		& \multicolumn{4}{c|}{Misses} &  &  \\
+		& $A$ & $B$ & $C$ & Total & Total Reads & Miss Rate \\
 		\hline
 		$ijk$ & $10^{11}$ & $10^{12}$ & 0 & $1.1\times10^{12}$ & $2\times10^{12}$ & 55\% \\
 		$ikj$ & $10^8$ & $10^{11}$ & $10^{11}$ & $2.001\times10^{11}$ & $2.0001\times10^{12}$ & 10\% \\
@@ -45,8 +45,8 @@ For $ijk$ and $jik$ multiplication, since values from matrix $C$ are not stored 
 	\end{tabular}
 	\subsection*{$n=10$}
 	\begin{tabular}{c | c c c c | c c}
-		& \multicolumn{4}{c|}{Misses} & Total & Miss \\
-		& $A$ & $B$ & $C$ & Total & Reads & Rate \\
+		& \multicolumn{4}{c|}{Misses} &  &  \\
+		& $A$ & $B$ & $C$ & Total & Total Reads & Miss Rate \\
 		\hline
 		$ijk$ & 10 & 10 & 0 & 20 & 2000 & 1.0\% \\
 		$ikj$ & 10 & 10 & 10 & 30 & 2100 & 1.4\% \\
@@ -57,8 +57,74 @@ For $ijk$ and $jik$ multiplication, since values from matrix $C$ are not stored 
 	\end{tabular}
 \end{center}
 
+\newpage
 \section*{Part 2}
+In the blocked matrix multiplication algorithm with $B=10$, the inner three loops will result in as many read cache misses as noted in Part 1 for simple matrix multiplication with $n=10$.
+In blocked matrix multiplication, we cannot skip reading from matrix $C$ with $ijk$ and $jik$ multiplication, so in all cases the submatrix multiplication results in 30 cache misses.
+Since the values in each block do not overlap, this many read cache misses will result from each iteration of the third loop---that is, $\lfloor \frac{n}{B}\rfloor^3$ times.\footnote
+{When $n\ \textrm{mod}\ B\ne0$, the third loop will execute $\lceil\frac{n}{B}\rceil^3$ times but $\lceil\frac{n}{B}\rceil^3-\lfloor\frac{n}{B}\rfloor^3$ of these iterations will result in fewer read cache misses---as many as simple matrix multiplication with matrix dimension $n\ \textrm{mod}\ B$.}
 
+With $n=10000$, blocked matrix multiplication with $B=10$ will result in $(\frac{10000}{10})^2=10^6$ blocks, each resulting in 30 read cache misses as noted above.
+
+\begin{center}
+	\subsection*{$n=10000$}
+	\begin{tabular}{c | c c c c | c c}
+		& \multicolumn{4}{c|}{Misses} &  & \\
+		& $A$ & $B$ & $C$ & Total & Total Reads & Miss Rate \\
+		\hline
+		$ijk$ & $10^7$ & $10^7$ & $10^7$ & $3\times10^7$ & $2.1\times10^9$ & 1.4\% \\
+		$ikj$ & $10^7$ & $10^7$ & $10^7$ & $3\times10^7$ & $2.1\times10^9$ & 1.4\% \\
+		$jik$ & $10^7$ & $10^7$ & $10^7$ & $3\times10^7$ & $2.1\times10^9$ & 1.4\% \\
+		$jki$ & $10^7$ & $10^7$ & $10^7$ & $3\times10^7$ & $2.1\times10^9$ & 1.4\% \\
+		$kij$ & $10^7$ & $10^7$ & $10^7$ & $3\times10^7$ & $2.1\times10^9$ & 1.4\% \\
+		$kji$ & $10^7$ & $10^7$ & $10^7$ & $3\times10^7$ & $2.1\times10^9$ & 1.4\% \\
+	\end{tabular}
+\end{center}
+
+\newpage
+\section*{Part 3}
+The measured execution times of the algorithms in Part 1 (block size 1) and Part 2 (block size $B$) on the Pantarhei cluster multiplying randomly-generated $2048\times2048$ matrices of doubles are given below.
+
+\begin{center}
+	\subsection*{$n=2048$}
+	\begin{tabular}{c | r | r r r r r r}
+		& & \multicolumn{6}{c}{Block size $B$} \\
+		& \multicolumn{1}{c |}{No blocking} & \multicolumn{1}{c}{10} & \multicolumn{1}{c}{16} & \multicolumn{1}{c}{32} & \multicolumn{1}{c}{48} & \multicolumn{1}{c}{64} & \multicolumn{1}{c}{96} \\
+		\hline
+		$ijk$ & 243.4 s & 44.4 s & 42.3 s & 43.1 s & 41.6 s & 42.2 s &  s \\
+		$ikj$ & 72.9 s & 36.8 s & 35.1 s & 36.1 s & 34.1 s & 33.8 s &  s \\
+		$jik$ & 226.4 s & 45.3 s & 42.9 s & 43.3 s & 42.1 s &  s &  s \\ 
+		$jki$ & 321.0 s & 49.9 s & 49.4 s & 51.1 s & 57.8 s &  s &  s \\
+		$kij$ & 71.4 s & 36.9 s & 35.3 s & 36.0 s & 34.0 s &  s &  s \\
+		$kji$ & 350.2 s & 49.5 s & 47.4 s & 50.9 s & 54.2 s &  s &  s
+	\end{tabular}
+\end{center}
+
+My implementation's correctness was verified by calculating the maximum difference between values in the matrix resulting from $ijk$ multiplication and the corresponding valuees in the matrices resulting from the other multiplication algorithms for each block size tested. The maximum difference obtained was the expected 0.000000.
+
+The code was compiled on Pantarhei with gcc 7.3.0 with no optimization flags. Initially, block sizes of 1 (equivalent to the algorithms in Part 1), 10, 16, 32, and 64 were tested. 
+As runtime still decreased for some algorithms (especially $ikj$ and $kij$) between $B=32$ and $B=64$, block sizes of 48 and 96 were tested. No significant difference was noted between $B=48$ and $B=64$ but a significant slowdown occurred between $B=64$ and $B=96$, suggesting the optimal block size is 64.
+
+The significantly faster runtimes for $ikj$ and $kij$ multiplication on the cluster can be explained by a greater cache line size than assumed in Part 2 causing the caching of one block to also cache some values in the next block.
+
+\section*{Part 4}
+I added a register to be reused by the innermost loop of each algorithm from Part 2 and tested their runtimes with $n=2048$ and $B=64$ on the Pantarhei cluster after compiling them with different compilers and optimization settings. The measured performance of each combination is listed below.
+\begin{center}
+	\subsection*{$n=2048$, $B=64$}
+	\begin{tabular}{c | r r r r | r r r r}
+		& \multicolumn{4}{c|}{gcc 7.3.0} & \multicolumn{4}{c}{gcc 5.4.0} \\
+		& \texttt{-O0} & \texttt{-O1} & \texttt{-O2} & \texttt{-O3} & \texttt{-O0} & \texttt{-O1} & \texttt{-O2} & \texttt{-O3} \\
+		\hline
+		$ijk$ &  s &  s &  s &  s &  s &  s &  s &  s \\
+		$ikj$ &  s &  s &  s &  s &  s &  s &  s &  s \\
+		$jik$ &  s &  s &  s &  s &  s &  s &  s &  s \\ 
+		$jki$ &  s &  s &  s &  s &  s &  s &  s &  s \\
+		$kij$ &  s &  s &  s &  s &  s &  s &  s &  s \\
+		$kji$ &  s &  s &  s &  s &  s &  s &  s &  s
+	\end{tabular}
+\end{center}
+
+My implementation's correctness was verified by the same method as in Part 3.
 
 \section*{Conclusion}
 conclude
