@@ -1,6 +1,7 @@
 \documentclass[12pt,letterpaper,oneside]{article}
 \usepackage[utf8]{inputenc}
 \usepackage{minted}
+\usepackage[table]{xcolor}
 
 \begin{document}
 
@@ -87,46 +88,87 @@ The measured execution times of the algorithms in Part 1 (block size 1) and Part
 
 \begin{center}
 	\subsection*{$n=2048$}
-	\begin{tabular}{c | r | r r r r r r}
-		& & \multicolumn{6}{c}{Block size $B$} \\
-		& \multicolumn{1}{c |}{No blocking} & \multicolumn{1}{c}{10} & \multicolumn{1}{c}{16} & \multicolumn{1}{c}{32} & \multicolumn{1}{c}{48} & \multicolumn{1}{c}{64} & \multicolumn{1}{c}{96} \\
+	\begin{tabular}{c | r | r r r r r}
+		& & \multicolumn{5}{c}{Block size $B$} \\
+		& \multicolumn{1}{c |}{No blocking} & \multicolumn{1}{c}{10} & \multicolumn{1}{c}{16} & \multicolumn{1}{c}{32} & \multicolumn{1}{c}{64} & \multicolumn{1}{c}{128} \\
 		\hline
-		$ijk$ & 243.4 s & 44.4 s & 42.3 s & 43.1 s & 41.6 s & 42.2 s &  s \\
-		$ikj$ & 72.9 s & 36.8 s & 35.1 s & 36.1 s & 34.1 s & 33.8 s &  s \\
-		$jik$ & 226.4 s & 45.3 s & 42.9 s & 43.3 s & 42.1 s &  s &  s \\ 
-		$jki$ & 321.0 s & 49.9 s & 49.4 s & 51.1 s & 57.8 s &  s &  s \\
-		$kij$ & 71.4 s & 36.9 s & 35.3 s & 36.0 s & 34.0 s &  s &  s \\
-		$kji$ & 350.2 s & 49.5 s & 47.4 s & 50.9 s & 54.2 s &  s &  s
+		$ijk$ & 243.4 s & 44.4 s & 42.3 s & 43.1 s & 42.2 s & 110.0 s \\
+		$ikj$ & 72.9 s & 36.8 s & 35.1 s & 36.1 s & 33.8 s & 35.1 s \\
+		$jik$ & 226.4 s & 45.3 s & 42.9 s & 43.3 s & 42.9 s & 84.5 s \\ 
+		$jki$ & 321.0 s & 49.9 s & 49.4 s & 51.1 s & 61.4 s & 113.6 s \\
+		$kij$ & 71.4 s & 36.9 s & 35.3 s & 36.0 s & 33.9 s & 35.9 s \\
+		$kji$ & 350.2 s & 49.5 s & 47.4 s & 50.9 s & 55.4 s & 98.1 s
 	\end{tabular}
 \end{center}
 
 My implementation's correctness was verified by calculating the maximum difference between values in the matrix resulting from $ijk$ multiplication and the corresponding valuees in the matrices resulting from the other multiplication algorithms for each block size tested. The maximum difference obtained was the expected 0.000000.
 
-The code was compiled on Pantarhei with gcc 7.3.0 with no optimization flags. Initially, block sizes of 1 (equivalent to the algorithms in Part 1), 10, 16, 32, and 64 were tested. 
-As runtime still decreased for some algorithms (especially $ikj$ and $kij$) between $B=32$ and $B=64$, block sizes of 48 and 96 were tested. No significant difference was noted between $B=48$ and $B=64$ but a significant slowdown occurred between $B=64$ and $B=96$, suggesting the optimal block size is 64.
+The code was compiled on Pantarhei with gcc 7.3.0 with no optimization flags. The increase in runtime between $B=64$ and $B=128$ suggests the optimal block size is 64 for each algorithm except $jki$ and $kji$, which appear to perform best with a block size of 16. As these algorithms are the slowest anyway, subsequent testing was performed only with $B=64$.
 
-The significantly faster runtimes for $ikj$ and $kij$ multiplication on the cluster can be explained by a greater cache line size than assumed in Part 2 causing the caching of one block to also cache some values in the next block.
+The significantly faster runtimes for $ikj$ and $kij$ multiplication on the cluster may be explained by a greater cache line size than assumed in Part 2 causing the caching of one block to also cache some values in the next block.
 
+\newpage
 \section*{Part 4}
-I added a register to be reused by the innermost loop of each algorithm from Part 2 and tested their runtimes with $n=2048$ and $B=64$ on the Pantarhei cluster after compiling them with different compilers and optimization settings. The measured performance of each combination is listed below.
+I added $2\times2$ register blocking (as in Project 1) to each algorithm from Part 2 and tested their runtimes with $n=2048$ and $B=64$ on the Pantarhei cluster after compiling them with different compilers and optimization settings. The measured performance of each combination is listed below.
 \begin{center}
 	\subsection*{$n=2048$, $B=64$}
 	\begin{tabular}{c | r r r r | r r r r}
 		& \multicolumn{4}{c|}{gcc 7.3.0} & \multicolumn{4}{c}{gcc 5.4.0} \\
 		& \texttt{-O0} & \texttt{-O1} & \texttt{-O2} & \texttt{-O3} & \texttt{-O0} & \texttt{-O1} & \texttt{-O2} & \texttt{-O3} \\
 		\hline
-		$ijk$ &  s &  s &  s &  s &  s &  s &  s &  s \\
-		$ikj$ &  s &  s &  s &  s &  s &  s &  s &  s \\
-		$jik$ &  s &  s &  s &  s &  s &  s &  s &  s \\ 
-		$jki$ &  s &  s &  s &  s &  s &  s &  s &  s \\
-		$kij$ &  s &  s &  s &  s &  s &  s &  s &  s \\
-		$kji$ &  s &  s &  s &  s &  s &  s &  s &  s
+		$ijk$ & 12.5 s & 3.6 s & 3.4 s & 3.5 s & 12.1 s & 3.6 s & 3.5 s & 3.5 s \\
+		$ikj$ & 12.9 s & 3.4 s & 2.6 s & \cellcolor{yellow!50} 2.2 s & 13.1 s & 3.4 s & 2.8 s & 2.7 s \\
+		$jik$ & 12.8 s & 3.9 s & 4.0 s & 3.8 s & 12.2 s & 4.2 s & 3.7 s & 3.7 s \\ 
+		$jki$ & 15.0 s & 16.0 s & 16.1 s & 16.1 s & 15.2 s & 16.1 s & 16.1 s & 16.1 s \\
+		$kij$ & 13.1 s & 3.5 s & 2.9 s & 2.4 s & 13.3 s & 3.6 s & 2.9 s & 2.9 s \\
+		$kji$ & 14.7 s & 15.4 s & 15.5 s & 15.5 s & 14.9 s & 15.5 s & 15.5 s & 15.5 s
 	\end{tabular}
 \end{center}
 
-My implementation's correctness was verified by the same method as in Part 3.
+My implementation's correctness was verified by the same method as in Part 3. The maximum difference obtained was 0.000003; this small difference is easily attributable to floating point arithmetic imprecision.
+The minimum runtime, 2.2 seconds, is highlighted in the table above.
+
+As an example of the implementation of cache and register blocking, my implementation of $ijk$ multiplication is reproduced below. Implementations of the other algorithms are similar.
+\begin{minted}[tabsize=2,fontsize=\small]{c}
+void ijk(double *a, double *b, double *c, int n, int B) {
+	for(int i = 0; i < n; i += B) {
+		for(int j = 0; j < n; j += B) {
+			for(int k = 0; k < n; k += B) {
+				for(int i1 = i; i1 < i + B && i1 < n; i1 += 2) {
+					for(int j1 = j; j1 < j + B && j1 < n; j1 += 2) {
+						register double c00, c01, c10, c11;
+						c00 = c01 = c10 = c11 = 0;
+						for(int k1 = k; k1 < k + B && k1 < n; k1 += 2) {
+							register double a00 = a[i1*n+k1];
+							register double a10 = a[(i1+1)*n+k1];
+							register double a01 = a[i1*n+k1+1];
+							register double a11 = a[(i1+1)*n+k1+1];
+							register double b00 = b[k1*n+j1];
+							register double b10 = b[(k1+1)*n+j1];
+							register double b01 = b[k1*n+j1+1];
+							register double b11 = b[(k1+1)*n+j1+1];
+							
+							c00 += a00 * b00 + a01 * b10;
+							c10 += a10 * b00 + a11 * b10;
+							c01 += a00 * b01 + a01 * b11;
+							c11 += a10 * a01 + a11 * b11;
+						}
+						c[i1*n+j1] += c00;
+						c[(i1+1)*n+j1] += c10;
+						c[i1*n+j1+1] += c01;
+						c[(i1+1)*n+j1+1] += c11;
+					}
+				}
+			}
+		}
+	}
+}
+\end{minted}
 
 \section*{Conclusion}
-conclude
+The differences in efficiency between loop orders in matrix multiplication can be greatly reduced (from 390\% to 46\% in my tests with $n=2048$)
+by blocking the matrices. However, the addition of compiler optimizations again amplifies these differences. At the highest optimization level of gcc 7.3.0,
+the runtime for $ikj$ multiplication of $2048\times2048$ matrices on the Pantarhei cluster can be reduced
+to 2.2 seconds, a speedup of 97.0\% over simple $ikj$ multiplication and 99.4\% over simple $kji$ multiplication, with the introduction of cache and register blocking.
  
 \end{document} 

@@ -2,7 +2,7 @@
 #SBATCH -q defq
 #SBATCH -N 1
 #SBATCH -n 1
-#SBATCH -t 00:40:00
+#SBATCH -t 01:00:00
 #SBATCH -J blockedmul
 #SBATCH -o blockedmul.%j.out
 #SBATCH -e blockedmul.%j.error
