@@ -1,0 +1,36 @@
+[sp19hpc_sdgillen@pantarhei ~]$ cat sieve1a.2170.out
+455052511 primes are less than or equal to 10000000000
+Total elapsed time:  14.260519
+[sp19hpc_sdgillen@pantarhei ~]$ cat sieve1b.2171.out
+455052511 primes are less than or equal to 10000000000
+Total elapsed time:  16.097517
+[sp19hpc_sdgillen@pantarhei ~]$ cat sieve1c.2172.out
+455052511 primes are less than or equal to 10000000000
+Total elapsed time:  13.247108
+[sp19hpc_sdgillen@pantarhei ~]$ cat sieve2a.2223.out
+455052511 primes are less than or equal to 10000000000
+Total elapsed time:   6.669703
+[sp19hpc_sdgillen@pantarhei ~]$ cat sieve2b.2224.out
+455052511 primes are less than or equal to 10000000000
+Total elapsed time:  11.295531
+[sp19hpc_sdgillen@pantarhei ~]$ cat sieve2c.2225.out
+455052511 primes are less than or equal to 10000000000
+Total elapsed time:   8.477495
+[sp19hpc_sdgillen@pantarhei ~]$ cat sieve3a.2240.out
+455052511 primes are less than or equal to 10000000000
+Total elapsed time:   6.606265
+[sp19hpc_sdgillen@pantarhei ~]$ cat sieve3b.2241.out
+455052511 primes are less than or equal to 10000000000
+Total elapsed time:   3.237914
+[sp19hpc_sdgillen@pantarhei ~]$ cat sieve3c.2242.out
+455052511 primes are less than or equal to 10000000000
+Total elapsed time:   1.581712
+[sp19hpc_sdgillen@pantarhei ~]$ cat sieve4a.2400.out
+455052511 primes are less than or equal to 10000000000
+Total elapsed time:   2.942250
+[sp19hpc_sdgillen@pantarhei ~]$ cat sieve4b.2401.out
+455052511 primes are less than or equal to 10000000000
+Total elapsed time:   1.471975
+[sp19hpc_sdgillen@pantarhei ~]$ cat sieve4c.2402.out
+455052511 primes are less than or equal to 10000000000
+Total elapsed time:   0.735836

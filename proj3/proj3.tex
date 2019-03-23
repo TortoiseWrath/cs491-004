@@ -1,0 +1,51 @@
+\documentclass[12pt,letterpaper,oneside]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{minted}
+\usepackage[table]{xcolor}
+
+\begin{document}
+
+\title{CS 491-004 Project 3 Report}
+\author{Sean Gillen}
+\date{March 22, 2019}
+\maketitle
+
+\section*{Introduction}
+In this project, I implemented, tested, and compared performance of four parallel versions of the Sieve of Eratosthenes on the Pantarhei cluster.
+
+\section*{Part 1}
+To allow primes up to $10^{10}$ to be counted, I changed the data type for variables used to store potential primes from \mintinline{c}{int} to \mintinline{c}{long long}, and used \mintinline{c}{atoll} instead of \mintinline{c}{atoi} to convert the command line argument $n$ to an integer. 
+When broadcasting primes in the implementations in Parts 1 and 2, I also used the \mintinline{c}{MPI_LONG_LONG_INT} type instead of the \mintinline{c}{MPI_INT} type. In my code, I used \mintinline{c}{typedef long long lli;}, so the type \mintinline{c}{lli} refers to \mintinline{c}{long long} in code snippets below.
+
+\section*{Part 2}
+Since we already know $2$ is prime, there is no need to test and store results for even integers $>2$. I implemented this improvement by making the index \mintinline{c}{i} in the \mintinline{c}{marked} arrays refer to the integer $a+2i+3$ instead of $a+i+2$, where $a$ is the process's \mintinline{c}{low_value}.
+
+\section*{Part 3}
+Because \mintinline{c}{MPI_Bcast} is $\Theta(\log p)$, waiting for primes found by process 0 to be broadcasted to other processes is actually slower than having each process sieve the primes up to $\sqrt n$ (the sieving is $\Theta(\sqrt n\log\log \sqrt n)$). I implemented a sequential Sieve of Eratosthenes with the optimization from Part 2 and used this to find the sieving primes in each process:
+\inputminted[tabsize=2,fontsize=\small]{c}{minisieve.c}
+
+\section*{Part 4}
+By segmenting the \mintinline{c}{marked} array in each process into blocks of size $<\sqrt n$, we can reduce the number of cache misses by maintaining these segments of the array in the cache when marking composite numbers. I implemented this as follows:
+\inputminted[tabsize=2,fontsize=\small]{c}{segments.c}
+
+\section*{Results}
+The tested runtimes of each implementation with 32, 64, and 128 processes on the Pantarhei cluster are as follows:
+
+\begin{center}
+	\begin{tabular}{c | r r r}
+		Implementation & $p=32$ & $p=64$ & $p=128$ \\
+		\hline
+		\texttt{sieve1} & 14.261 s & 16.098 s & 13.247 s \\
+		\texttt{sieve2} & 6.670 s & 11.296 s & 8.477 s \\
+		\texttt{sieve3} & 6.606 s & 3.238 s & 1.582 s \\
+		\texttt{sieve4} & 2.942 s & 1.472 s & 0.736 s
+	\end{tabular}
+\end{center}
+
+\noindent
+All 12 tests resulted in $\pi(10^{10})=455\,052\,511$, verifying the correctness of each implementation.
+
+\section*{Conclusion}
+By making small efficiency improvements in the parallel implementation of the Sieve of Eratosthenes, the runtime for large $n$ can be significantly reduced. With 128 processes on the Pantarhei cluster and $n=10^{10}$, a time decrease from 13.247 seconds to 0.736 seconds was observed after implementing three optimizations, corresponding to a speedup of 94.4\%.
+
+\end{document} 

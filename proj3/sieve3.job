@@ -1,0 +1,11 @@
+#!/bin/bash -l
+
+#SBATCH -q defq
+#SBATCH -N 1
+#SBATCH -n 2
+#SBATCH -t 00:01:00
+#SBATCH -J sieve3
+#SBATCH -o sieve3.%j.out
+#SBATCH -e sieve3.%j.error
+
+mpirun ./sieve3 1000
