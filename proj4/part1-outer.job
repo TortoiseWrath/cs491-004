@@ -1,0 +1,14 @@
+#!/bin/bash -l
+
+#SBATCH -q defq
+#SBATCH -N 1
+#SBATCH -n 32
+#SBATCH -t 01:20:00
+#SBATCH -J part1-outer
+#SBATCH -o %j.out
+#SBATCH -e %j.error
+
+mpirun ./part1-outer 4
+mpirun ./part1-outer 8
+mpirun ./part1-outer 16
+mpirun ./part1-outer 32
