@@ -9,6 +9,8 @@ int main(int argc, char *argv[]) {
 		t = atoi(argv[1]);
 	}
 	omp_set_num_threads(t);
+
+	printf("Testing with %i threads\n", t);
 	
 	double *A = malloc(sizeof *A * N * N);
 	double *B = malloc(sizeof *B * N * N);

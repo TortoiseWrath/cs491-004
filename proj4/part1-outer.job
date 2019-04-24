@@ -8,7 +8,7 @@
 #SBATCH -o %j.out
 #SBATCH -e %j.error
 
-mpirun ./part1-outer 4
-mpirun ./part1-outer 8
-mpirun ./part1-outer 16
-mpirun ./part1-outer 32
+./part1-outer 4
+./part1-outer 8
+./part1-outer 16
+./part1-outer 32
