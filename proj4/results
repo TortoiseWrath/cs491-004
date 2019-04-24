@@ -6,14 +6,6 @@ Time of computation: 8.139703 seconds
 Time of computation: 8.174053 seconds
 Time of computation: 8.140044 seconds
 Average time of computation: 8.047938 seconds
-[sp19hpc_sdgillen@pantarhei ~]$ cat 3771.out
-Testing with 4 threads
-Time of computation: 7.784301 seconds
-Time of computation: 8.001588 seconds
-Time of computation: 8.139703 seconds
-Time of computation: 8.174053 seconds
-Time of computation: 8.140044 seconds
-Average time of computation: 8.047938 seconds
 Testing with 8 threads
 Sequential time of computation: 27.838788 seconds
 Time of computation: 4.091411 seconds
@@ -42,14 +34,6 @@ Time of computation: 1.187617 seconds
 Time of computation: 1.190564 seconds
 Average time of computation: 1.157406 seconds
 
-[sp19hpc_sdgillen@pantarhei ~]$ cat 3774.out 
-Testing with 4 threads
-Time of computation: 5.840936 seconds
-Time of computation: 5.914027 seconds
-Time of computation: 5.825971 seconds
-Time of computation: 5.862298 seconds
-Time of computation: 5.893682 seconds
-Average time of computation: 5.867383 seconds
 [sp19hpc_sdgillen@pantarhei ~]$ cat 3774.out 
 Testing with 4 threads
 Time of computation: 5.840936 seconds

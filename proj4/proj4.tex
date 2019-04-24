@@ -1,0 +1,137 @@
+\documentclass[12pt,letterpaper,oneside]{article}
+\usepackage[utf8]{inputenc}
+\usepackage{minted}
+\usepackage[table]{xcolor}
+\usepackage{siunitx}
+
+\begin{document}
+
+\title{CS 491-004 Project 4 Report}
+\author{Sean Gillen}
+\date{April 23, 2019}
+\maketitle
+
+\section*{Introduction}
+In this project, I implemented parallel versions of algorithms for matrix multiplication and heat distribution calculation using OpenMP and tested the performance of these implementations on the Pantarhei cluster.
+
+\section*{Part 1}
+To allow larger matrix sizes, I modified the given matrix multiplication program to allocate the matrices on the heap rather than the stack. Then I used the OpenMP \mintinline{c}{#pragma omp parallel for} to parallelize the outer \texttt{for} loop in the matrix multiplication,
+and enclosed this loop in another \texttt{for} loop to get the average computation time over five runs.
+
+I tested this parallel algorithm with 4, 8, 16, and 32 threads on the Pantarhei cluster. When testing with 8 threads, I also performed the original sequential computation and got its running time. 
+I also compared the results of this algorithm to the resuls of the parallel algorithm with 8 threads to verify the correctness of the parallel algorithm; no differences between values in the matrices resulting from the sequential and parallel multiplications was observed.
+
+After testing this program, I moved the parallelization pragma to the middle \texttt{for} loop and tested this program in the same way. Again, a maximum difference of 0.000000 between values in the matrices resulting from sequential and parallel algorithms was observed, verifying the correctness of the parallel algorithm.
+
+The average tested times are as follows:
+
+\begin{center}
+	\begin{tabular}{c | r r r r r}
+		\scriptsize{Parallelized loop} & Sequential & 4 threads & 8 threads & 16 threads & 32 threads \\
+		\hline
+		Outer & 27.84 s & 8.05 s & 4.20 s & 2.16 s & 1.16 s \\
+		Middle & 27.25 s & 5.87 s & 3.09 s & 1.54 s & 0.78 s
+	\end{tabular}
+\end{center}
+
+Note that the differences between the identical sequential algorithms are immaterial; these times are from single runs of the algorithm, as the sequential algorithm was not run five times to get an average time as the others were.
+
+Note also that the speedup for the parallelization using the middle loop is greater than the number of threads; this is likely due to a decrease in cache misses caused as a side effect of the parallelization.
+
+My implementation with the outer loop parallelized is reproduced below:
+\inputminted[tabsize=2,fontsize=\small]{c}{part1-outer.c}
+
+\section*{Part 2}
+For all tests in parts 2 and 3, I used a $1000\times1000$ room matrix and 5000 iterations.
+
+I first modeled the room assuming an initial temperature of \SI{0}{\celsius} for the interior points. Sampling the resulting matrix at 
+$\left(0, 0\right), \left(0, \frac{N}{8}\right), ..., \left(0, \frac{7N}{8}\right), $\\
+$ \left(\frac{N}{8}, 0\right), ... \left(\frac{7N}{8}, \frac{7N}{8}\right)$---that is, the top-left points of $\frac{N}{8}\times\frac{N}{8}$ cells within the room---the resulting temperatures were:
+\begin{center}
+	\footnotesize
+	\begin{tabular}{@{}r r r r r r r r@{}}
+		\SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{100.00}{\celsius} & \SI{100.00}{\celsius} & \SI{100.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} \\
+		\SI{20.00}{\celsius} & \SI{0.49}{\celsius} & \SI{0.38}{\celsius} & \SI{1.20}{\celsius} & \SI{1.24}{\celsius} & \SI{1.19}{\celsius} & \SI{0.38}{\celsius} & \SI{0.51}{\celsius}  \\
+		\SI{20.00}{\celsius} & \SI{0.25}{\celsius} & \SI{0.00}{\celsius} & \SI{0.00}{\celsius} & \SI{0.00}{\celsius} & \SI{0.00}{\celsius} & \SI{0.00}{\celsius} & \SI{0.26}{\celsius} \\
+		\SI{20.00}{\celsius} & \SI{0.25}{\celsius} & \SI{0.00}{\celsius} & \SI{0.00}{\celsius} & \SI{0.00}{\celsius} & \SI{0.00}{\celsius} & \SI{0.00}{\celsius} & \SI{0.26}{\celsius} \\
+		\SI{20.00}{\celsius} & \SI{0.25}{\celsius} & \SI{0.00}{\celsius} & \SI{0.00}{\celsius} & \SI{0.00}{\celsius} & \SI{0.00}{\celsius} & \SI{0.00}{\celsius} & \SI{0.26}{\celsius} \\
+		\SI{20.00}{\celsius} & \SI{0.25}{\celsius} & \SI{0.00}{\celsius} & \SI{0.00}{\celsius} & \SI{0.00}{\celsius} & \SI{0.00}{\celsius} & \SI{0.00}{\celsius} & \SI{0.26}{\celsius} \\
+		\SI{20.00}{\celsius} & \SI{0.25}{\celsius} & \SI{0.00}{\celsius} & \SI{0.00}{\celsius} & \SI{0.00}{\celsius} & \SI{0.00}{\celsius} & \SI{0.00}{\celsius} & \SI{0.26}{\celsius} \\
+		\SI{20.00}{\celsius} & \SI{0.51}{\celsius} & \SI{0.26}{\celsius} & \SI{0.26}{\celsius} & \SI{0.26}{\celsius} & \SI{0.26}{\celsius} & \SI{0.26}{\celsius} & \SI{0.52}{\celsius}
+	\end{tabular}
+	\normalsize
+\end{center}
+Note that many more iterations would be required to noticeably warm the innermost cells of this room.
+
+I also sampled the temperature matrix at $\left(\frac{N}{16}, \frac{N}{16}\right), \left(\frac{N}{16}, \frac{3N}{16}\right), ...,$\\
+$ \left(\frac{N}{16}, \frac{15N}{16}\right), \left(\frac{3N}{16}, \frac{N}{16}\right), ... (\frac{15N}{16}, \frac{15N}{16})$---that is, at the center points of $\frac{N}{8}\times\frac{N}{8}$ cells. 
+
+The resulting temperatures were:
+\begin{center}
+	\small
+	\begin{tabular}{r r r r r r r r}
+		\SI{7.68}{\celsius} & \SI{4.36}{\celsius} & \SI{15.23}{\celsius} & \SI{21.49}{\celsius} & \SI{21.49}{\celsius} & \SI{15.23}{\celsius} & \SI{4.36}{\celsius} & \SI{7.68}{\celsius} \\
+		\SI{4.30}{\celsius} & \SI{0.01}{\celsius} & \SI{0.01}{\celsius} & \SI{0.02}{\celsius} & \SI{0.02}{\celsius} & \SI{0.01}{\celsius} & \SI{0.01}{\celsius} & \SI{4.30}{\celsius}  \\
+		\SI{4.30}{\celsius} & \SI{0.00}{\celsius} & \SI{0.00}{\celsius} & \SI{0.00}{\celsius} & \SI{0.00}{\celsius} & \SI{0.00}{\celsius} & \SI{0.00}{\celsius} & \SI{4.30}{\celsius} \\
+		\SI{4.30}{\celsius} & \SI{0.00}{\celsius} & \SI{0.00}{\celsius} & \SI{0.00}{\celsius} & \SI{0.00}{\celsius} & \SI{0.00}{\celsius} & \SI{0.00}{\celsius} & \SI{4.30}{\celsius} \\
+		\SI{4.30}{\celsius} & \SI{0.00}{\celsius} & \SI{0.00}{\celsius} & \SI{0.00}{\celsius} & \SI{0.00}{\celsius} & \SI{0.00}{\celsius} & \SI{0.00}{\celsius} & \SI{4.30}{\celsius} \\
+		\SI{4.30}{\celsius} & \SI{0.00}{\celsius} & \SI{0.00}{\celsius} & \SI{0.00}{\celsius} & \SI{0.00}{\celsius} & \SI{0.00}{\celsius} & \SI{0.00}{\celsius} & \SI{4.30}{\celsius} \\
+		\SI{4.30}{\celsius} & \SI{0.01}{\celsius} & \SI{0.00}{\celsius} & \SI{0.00}{\celsius} & \SI{0.00}{\celsius} & \SI{0.00}{\celsius} & \SI{0.01}{\celsius} & \SI{4.30}{\celsius} \\
+		\SI{7.68}{\celsius} & \SI{4.30}{\celsius} & \SI{4.30}{\celsius} & \SI{4.30}{\celsius} & \SI{4.30}{\celsius} & \SI{4.30}{\celsius} & \SI{4.30}{\celsius} & \SI{7.68}{\celsius}
+	\end{tabular}
+	\normalsize
+\end{center}
+
+I also modeled the room assuming a more realistic initial temperature of \SI{20}{\celsius} for the interior points. Sampling the resulting matrix using the first method yielded the following temperatures:
+\begin{center}
+	\footnotesize
+	\begin{tabular}{@{}r r r r r r r r@{}}
+		\SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{100.00}{\celsius} & \SI{100.00}{\celsius} & \SI{100.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} \\
+		\SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.13}{\celsius} & \SI{20.95}{\celsius} & \SI{20.99}{\celsius} & \SI{20.95}{\celsius} & \SI{20.13}{\celsius} & \SI{20.00}{\celsius}  \\
+		\SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} \\
+		\SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} \\
+		\SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} \\
+		\SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} \\
+		\SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} \\
+		\SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius}
+	\end{tabular}
+	\normalsize
+\end{center}
+
+With the second sampling method, the temperatures were:
+\begin{center}
+	\footnotesize
+	\begin{tabular}{r r r r r r r r}
+		\SI{20.00}{\celsius} & \SI{20.06}{\celsius} & \SI{30.93}{\celsius} & \SI{37.19}{\celsius} & \SI{37.19}{\celsius} & \SI{30.93}{\celsius} & \SI{20.06}{\celsius} & \SI{20.00}{\celsius} \\
+		\SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.01}{\celsius} & \SI{20.01}{\celsius} & \SI{20.01}{\celsius} & \SI{20.01}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius}  \\
+		\SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} \\
+		\SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} \\
+		\SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} \\
+		\SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} \\
+		\SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} \\
+		\SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius} & \SI{20.00}{\celsius}
+	\end{tabular}
+	\normalsize
+\end{center}
+
+On the Pantarhei cluster, the computation for the first room took 24.12 seconds and the computation for the second room took 24.23 seconds, for an average sequential computation time of 24.18 seconds.
+
+My complete program is reproduced below.
+\inputminted[tabsize=2,fontsize=\small]{c}{part2.c}
+
+\section*{Part 3}
+
+I modified the sequential program from Part 2 by adding a parallel calculation loop after the sequential calculation loop. 
+I parallelized the loop by adding the OpenMP \mintinline{c}{#pragma omp parallel for} to the outer loop of the heat calculation at each iteration.
+I verified the correctness of this calculation by calculating the maximum difference in temperature between the room matrices generated by the sequential and parallel algorithms
+after the same number of iterations; no differences were observed.
+
+The observed sequential computation time was 23.85 seconds and the parallel computation time was 6.41 seconds, corresponding to a speedup factor of 3.72.
+
+\section*{Conclusion}
+
+Parallelization of sequential algorithms using OpenMP is an easy way to improve performance. For matrix multiplication and heat distribution calculation, I observed speedup factors of 34 and 3.7 respectively. 
+However, this is still much less than the speedup factor of 159 achieved for sequential matrix multiplication using cache and register blocking for the same naïve algorithm in Project 2, demonstrating that parallelization is just one effective way to increase the performance of algorithms.
+
+
+\end{document} 

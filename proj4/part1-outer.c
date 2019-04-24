@@ -38,7 +38,8 @@ int main(int argc, char *argv[]) {
 			}
 		}
 		double end_seq = omp_get_wtime(); // end time measurement
-		printf("Sequential time of computation: %f seconds\n", end_seq - start_seq);
+		printf("Sequential time of computation: %f seconds\n", 
+			end_seq - start_seq);
 	}
 
 	double total_time = 0;
@@ -80,6 +81,7 @@ int main(int argc, char *argv[]) {
 
 	free(A); free(B); free(C);
 
-	printf("Average time of computation: %f seconds\n", total_time / 5);
+	printf("Average time of computation: %f seconds\n", 
+		total_time / 5);
 	return(0);
 }
