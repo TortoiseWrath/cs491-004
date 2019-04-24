@@ -1,0 +1,14 @@
+#!/bin/bash -l
+
+#SBATCH -q defq
+#SBATCH -N 1
+#SBATCH -n 32
+#SBATCH -t 01:20:00
+#SBATCH -J part1-inner
+#SBATCH -o %j.out
+#SBATCH -e %j.error
+
+./part1-inner 4
+./part1-inner 8
+./part1-inner 16
+./part1-inner 32

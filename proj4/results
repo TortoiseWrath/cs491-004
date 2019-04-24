@@ -1,0 +1,137 @@
+[sp19hpc_sdgillen@pantarhei ~]$ cat 3771.out
+Testing with 4 threads
+Time of computation: 7.784301 seconds
+Time of computation: 8.001588 seconds
+Time of computation: 8.139703 seconds
+Time of computation: 8.174053 seconds
+Time of computation: 8.140044 seconds
+Average time of computation: 8.047938 seconds
+[sp19hpc_sdgillen@pantarhei ~]$ cat 3771.out
+Testing with 4 threads
+Time of computation: 7.784301 seconds
+Time of computation: 8.001588 seconds
+Time of computation: 8.139703 seconds
+Time of computation: 8.174053 seconds
+Time of computation: 8.140044 seconds
+Average time of computation: 8.047938 seconds
+Testing with 8 threads
+Sequential time of computation: 27.838788 seconds
+Time of computation: 4.091411 seconds
+Maximum difference is 0.000000
+Time of computation: 4.159894 seconds
+Maximum difference is 0.000000
+Time of computation: 4.180313 seconds
+Maximum difference is 0.000000
+Time of computation: 4.292325 seconds
+Maximum difference is 0.000000
+Time of computation: 4.279413 seconds
+Maximum difference is 0.000000
+Average time of computation: 4.200671 seconds
+Testing with 16 threads
+Time of computation: 2.112663 seconds
+Time of computation: 2.114502 seconds
+Time of computation: 2.108444 seconds
+Time of computation: 2.221370 seconds
+Time of computation: 2.253087 seconds
+Average time of computation: 2.162013 seconds
+Testing with 32 threads
+Time of computation: 1.099577 seconds
+Time of computation: 1.122768 seconds
+Time of computation: 1.186502 seconds
+Time of computation: 1.187617 seconds
+Time of computation: 1.190564 seconds
+Average time of computation: 1.157406 seconds
+
+[sp19hpc_sdgillen@pantarhei ~]$ cat 3774.out 
+Testing with 4 threads
+Time of computation: 5.840936 seconds
+Time of computation: 5.914027 seconds
+Time of computation: 5.825971 seconds
+Time of computation: 5.862298 seconds
+Time of computation: 5.893682 seconds
+Average time of computation: 5.867383 seconds
+[sp19hpc_sdgillen@pantarhei ~]$ cat 3774.out 
+Testing with 4 threads
+Time of computation: 5.840936 seconds
+Time of computation: 5.914027 seconds
+Time of computation: 5.825971 seconds
+Time of computation: 5.862298 seconds
+Time of computation: 5.893682 seconds
+Average time of computation: 5.867383 seconds
+Testing with 8 threads
+Sequential time of computation: 27.251761 seconds
+Time of computation: 3.068328 seconds
+Maximum difference is 0.000000
+Time of computation: 3.081874 seconds
+Maximum difference is 0.000000
+Time of computation: 3.064485 seconds
+Maximum difference is 0.000000
+Time of computation: 3.098331 seconds
+Maximum difference is 0.000000
+Time of computation: 3.130219 seconds
+Maximum difference is 0.000000
+Average time of computation: 3.088647 seconds
+Testing with 16 threads
+Time of computation: 1.542366 seconds
+Time of computation: 1.537124 seconds
+Time of computation: 1.537848 seconds
+Time of computation: 1.537160 seconds
+Time of computation: 1.540133 seconds
+Average time of computation: 1.538926 seconds
+Testing with 32 threads
+Time of computation: 0.797427 seconds
+Time of computation: 0.792025 seconds
+Time of computation: 0.805450 seconds
+Time of computation: 0.790634 seconds
+Time of computation: 0.791431 seconds
+Average time of computation: 0.795393 seconds
+
+
+[sp19hpc_sdgillen@pantarhei ~]$ cat 3789.out 
+Time of computation: 24.119142 seconds
+20.000000 20.000000 20.000000 100.000000 100.000000 100.000000 20.000000 20.000000 
+20.000000 0.493801 0.380909 1.195929 1.241969 1.193793 0.376233 0.507997 
+20.000000 0.248409 0.000030 0.000054 0.000057 0.000054 0.000031 0.262789 
+20.000000 0.248398 0.000011 0.000000 0.000000 0.000000 0.000013 0.262778 
+20.000000 0.248398 0.000011 0.000000 0.000000 0.000000 0.000013 0.262778 
+20.000000 0.248398 0.000011 0.000000 0.000000 0.000000 0.000013 0.262778 
+20.000000 0.248410 0.000024 0.000013 0.000013 0.000013 0.000025 0.262790 
+20.000000 0.507920 0.262789 0.262778 0.262778 0.262778 0.262790 0.522111 
+
+7.675595 4.358261 15.225163 21.489401 21.489401 15.225163 4.358261 7.675595 
+4.302813 0.007482 0.012575 0.018358 0.018358 0.012575 0.007482 4.302813 
+4.299925 0.003677 0.000000 0.000000 0.000000 0.000000 0.003677 4.299925 
+4.299925 0.003677 0.000000 0.000000 0.000000 0.000000 0.003677 4.299925 
+4.299925 0.003677 0.000000 0.000000 0.000000 0.000000 0.003677 4.299925 
+4.299925 0.003677 0.000000 0.000000 0.000000 0.000000 0.003677 4.299925 
+4.302813 0.007354 0.003677 0.003677 0.003677 0.003677 0.007354 4.302813 
+7.675593 4.302813 4.299925 4.299925 4.299925 4.299925 4.302813 7.675593 
+
+
+[sp19hpc_sdgillen@pantarhei ~]$ cat 3793.out
+Time of computation: 24.230737 seconds
+20.000000 20.000000 20.000000 100.000000 100.000000 100.000000 20.000000 20.000000 
+20.000000 20.000084 20.132501 20.947531 20.993572 20.945395 20.127823 20.000077 
+20.000000 20.000000 20.000007 20.000043 20.000046 20.000043 20.000007 20.000000 
+20.000000 20.000000 20.000000 20.000000 20.000000 20.000000 20.000000 20.000000 
+20.000000 20.000000 20.000000 20.000000 20.000000 20.000000 20.000000 20.000000 
+20.000000 20.000000 20.000000 20.000000 20.000000 20.000000 20.000000 20.000000 
+20.000000 20.000000 20.000000 20.000000 20.000000 20.000000 20.000000 20.000000 
+20.000000 20.000000 20.000000 20.000000 20.000000 20.000000 20.000000 20.000000 
+
+20.000001 20.055447 30.925238 37.189476 37.189476 30.925238 20.055447 20.000001 
+20.000000 20.000129 20.008898 20.014681 20.014681 20.008898 20.000129 20.000000 
+20.000000 20.000000 20.000000 20.000000 20.000000 20.000000 20.000000 20.000000 
+20.000000 20.000000 20.000000 20.000000 20.000000 20.000000 20.000000 20.000000 
+20.000000 20.000000 20.000000 20.000000 20.000000 20.000000 20.000000 20.000000 
+20.000000 20.000000 20.000000 20.000000 20.000000 20.000000 20.000000 20.000000 
+20.000000 20.000000 20.000000 20.000000 20.000000 20.000000 20.000000 20.000000 
+20.000000 20.000000 20.000000 20.000000 20.000000 20.000000 20.000000 20.000000
+
+
+
+[sp19hpc_sdgillen@pantarhei ~]$ cat 3801.out
+Time of sequential computation: 23.850057 seconds
+Time of parallel computation: 6.407587 seconds
+Maximum difference: 0.000000
+Speedup factor: 3.72
